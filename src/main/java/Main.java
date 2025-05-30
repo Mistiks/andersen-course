@@ -29,6 +29,8 @@ public class Main {
 
             option = selector.chooseMainMenuOperation();
         }
+
+        scanner.close();
     }
 
     private static void processAdminAction(MenuSelector selector, DataReader reader, Memory memory) {
