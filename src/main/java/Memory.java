@@ -15,6 +15,26 @@ public class Memory {
         workspaceList.add(space);
     }
 
+    public List<Reservation> getReservationList() {
+        return reservationList;
+    }
+
+    public List<WorkSpace> getWorkspaceList() {
+        return workspaceList;
+    }
+
+    public void setReservationList(List<Reservation> reservationList) {
+        this.reservationList = reservationList;
+
+        if (!this.reservationList.isEmpty()) {
+            Reservation.setCounter(this.reservationList.get(reservationList.size() - 1).getId());
+        }
+    }
+
+    public void setWorkspaceList(List<WorkSpace> workspaceList) {
+        this.workspaceList = workspaceList;
+    }
+
     private Optional<WorkSpace> getWorkSpaceById(int spaceId) {
         return workspaceList.stream().filter(i -> i.getId() == spaceId).findFirst();
     }
@@ -54,6 +74,10 @@ public class Memory {
             workSpaceView.append(space.toString()).append("\n");
         }
 
+        if (workSpaceView.isEmpty()) {
+            return "Workspaces not found!\n";
+        }
+
         return workSpaceView.toString();
     }
 
@@ -65,6 +89,10 @@ public class Memory {
             workSpaceView.append(space.toString()).append("\n");
         }
 
+        if (workSpaceView.isEmpty()) {
+            return "Workspaces not found!\n";
+        }
+
         return workSpaceView.toString();
     }
 
@@ -73,6 +101,10 @@ public class Memory {
 
         for (Reservation reservation : reservationList) {
             reservationsView.append(reservation.toString()).append("\n");
+        }
+
+        if (reservationsView.isEmpty()) {
+            return "Reservations not found!\n";
         }
 
         return reservationsView.toString();
