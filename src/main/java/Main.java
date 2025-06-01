@@ -11,8 +11,9 @@ public class Main {
     private static final int MAIN_MENU_OPTION_AMOUNT = 3;
     private static final int ADMIN_MENU_OPTION_AMOUNT = 6;
     private static final int CUSTOMER_MENU_OPTION_AMOUNT = 5;
-    private static final String WORKSPACE_PATH = "src/main/resources/workspace.txt";
-    private static final String RESERVATION_PATH = "src/main/resources/reservation.txt";
+    private static final String WORKSPACE_PATH = "src/main/resources/workspace.ser";
+    private static final String RESERVATION_PATH = "src/main/resources/reservation.ser";
+    private static final String STATE_LOAD_MESSAGE = "Program state wasn't retrieved. Start with empty memory!";
 
     public static void main(String[] args) {
         int option;
@@ -25,6 +26,11 @@ public class Main {
 
         fileReader.readState();
         System.out.println(WELCOME_MESSAGE);
+
+        if (!fileReader.isStateRestored()) {
+            memory.clear();
+            System.out.println(STATE_LOAD_MESSAGE);
+        }
 
         option = selector.chooseMainMenuOperation();
 

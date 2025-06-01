@@ -31,6 +31,11 @@ public class Memory {
         }
     }
 
+    public void clear() {
+        reservationList.clear();
+        workspaceList.clear();
+    }
+
     public void setWorkspaceList(List<WorkSpace> workspaceList) {
         this.workspaceList = workspaceList;
     }

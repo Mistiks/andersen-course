@@ -12,6 +12,7 @@ import main.java.entity.WorkSpace;
 
 public class StateFileReader {
 
+    private boolean isStateRestored = true;
     private Memory memory;
     private String reservationPath;
     private String workSpacePath;
@@ -20,6 +21,10 @@ public class StateFileReader {
         this.reservationPath = reservationPath;
         this.workSpacePath = workSpacePath;
         this.memory = memory;
+    }
+
+    public boolean isStateRestored() {
+        return isStateRestored;
     }
 
     public void readState() {
@@ -32,6 +37,7 @@ public class StateFileReader {
             memory.setReservationList((List<Reservation>) reservationStream.readObject());
         } catch (EOFException | FileNotFoundException fileException) {
             System.out.println("No reservations in memory!");
+            this.isStateRestored = false;
         }  catch (IOException | ClassNotFoundException exception) {
             System.out.println(exception.getMessage());
         }
@@ -42,6 +48,7 @@ public class StateFileReader {
             memory.setWorkspaceList((List<WorkSpace>) workSpaceStream.readObject());
         } catch (EOFException | FileNotFoundException fileException) {
             System.out.println("No workspaces in memory!");
+            this.isStateRestored = false;
         } catch (IOException | ClassNotFoundException exception) {
             System.out.println(exception.getMessage());
         }
