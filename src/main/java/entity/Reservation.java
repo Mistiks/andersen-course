@@ -1,8 +1,10 @@
 package main.java.entity;
 
-public class Reservation {
+import java.io.Serializable;
 
-    private static int counter = 1;
+public class Reservation implements Serializable {
+
+    private static int counter = 0;
     private int id;
     private int spaceId;
     private String clientName;
@@ -11,14 +13,12 @@ public class Reservation {
     private String timeEnd;
 
     public Reservation(int spaceId, String clientName, String date, String timeStart, String timeEnd) {
-        id = counter;
+        id = ++counter;
         this.spaceId = spaceId;
         this.clientName = clientName;
         this.date = date;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
-
-        counter++;
     }
 
     public int getId() {
@@ -27,6 +27,10 @@ public class Reservation {
 
     public int getSpaceId() {
         return spaceId;
+    }
+
+    public static void setCounter(int counter) {
+        Reservation.counter = counter;
     }
 
     @Override
