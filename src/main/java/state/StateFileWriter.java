@@ -26,5 +26,7 @@ public class StateFileWriter {
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
+
+        System.out.println("State was saved by class loaded with " + this.getClass().getClassLoader());
     }
 }

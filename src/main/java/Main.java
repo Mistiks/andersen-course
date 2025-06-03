@@ -1,8 +1,15 @@
 package main.java;
 
+import main.java.loader.FileWriterClassLoader;
 import main.java.state.StateFileReader;
 import main.java.state.StateFileWriter;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Scanner;
 
 public class Main {
@@ -23,6 +30,7 @@ public class Main {
         DataReader reader = new DataReader(scanner);
         StateFileWriter fileWriter = new StateFileWriter(RESERVATION_PATH, WORKSPACE_PATH, memory);
         StateFileReader fileReader = new StateFileReader(RESERVATION_PATH, WORKSPACE_PATH, memory);
+        FileWriterClassLoader classLoader = new FileWriterClassLoader();
 
         fileReader.readState();
         System.out.println(WELCOME_MESSAGE);
@@ -42,6 +50,17 @@ public class Main {
             }
 
             option = selector.chooseMainMenuOperation();
+        }
+
+        try {
+            Class<?> customWriter = classLoader.loadClass("StateFileWriter");
+            Object customWriterObject = customWriter.getDeclaredConstructor(String.class, String.class, Memory.class)
+                    .newInstance(RESERVATION_PATH, WORKSPACE_PATH, memory);
+            Method writeStateMethod = customWriter.getMethod("writeState");
+            writeStateMethod.invoke(customWriterObject);
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            System.out.println(e.getMessage());
         }
 
         fileWriter.writeState();
