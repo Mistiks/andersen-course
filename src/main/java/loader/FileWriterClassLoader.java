@@ -36,7 +36,7 @@ public class FileWriterClassLoader extends ClassLoader {
 
         try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
             binaryClassData = fileInputStream.readAllBytes();
-            return defineClass(name, binaryClassData, 0, binaryClassData.length);
+            return defineClass("main.java.state.StateFileWriter", binaryClassData, 0, binaryClassData.length);
         } catch (IOException ex) {
             throw new ClassNotFoundException("Can't load class " + name + " from the file. With error " + ex.getMessage());
         }
