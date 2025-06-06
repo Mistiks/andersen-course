@@ -22,7 +22,7 @@ public class StateFileWriter {
              ObjectOutputStream workSpaceStream = new ObjectOutputStream(new FileOutputStream(workSpacePath))) {
 
             reservationStream.writeObject(memory.getReservationList());
-            workSpaceStream.writeObject(memory.getWorkspaceList());
+            workSpaceStream.writeObject(memory.getWorkSpaceMap());
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }

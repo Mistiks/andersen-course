@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class WorkSpace implements Serializable {
 
-    private int id;
+    private final int id;
     private String type;
     private int price;
     private boolean availability;
@@ -18,10 +18,6 @@ public class WorkSpace implements Serializable {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getType() {

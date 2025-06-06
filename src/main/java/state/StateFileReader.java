@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
+import java.util.Map;
 import main.java.Memory;
 import main.java.entity.Reservation;
 import main.java.entity.WorkSpace;
@@ -45,7 +46,7 @@ public class StateFileReader {
 
     private void readWorkSpaceState() {
         try (ObjectInputStream workSpaceStream = new ObjectInputStream(new FileInputStream(workSpacePath))) {
-            memory.setWorkspaceList((List<WorkSpace>) workSpaceStream.readObject());
+            memory.setWorkSpaceMap((Map<Integer, WorkSpace>) workSpaceStream.readObject());
         } catch (EOFException | FileNotFoundException fileException) {
             System.out.println("No workspaces in memory!");
             this.isStateRestored = false;

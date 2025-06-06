@@ -2,25 +2,39 @@ package main.java;
 
 import main.java.entity.Reservation;
 import main.java.entity.WorkSpace;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Memory {
 
     private List<Reservation> reservationList = new ArrayList<>();
-    private List<WorkSpace> workspaceList = new ArrayList<>();
+    private Map<Integer, WorkSpace> workSpaceMap = new TreeMap<>();
 
     public void addWorkSpace(WorkSpace space) {
-        workspaceList.add(space);
+        if (workSpaceMap.containsKey(space.getId())) {
+            System.out.println("Workspace with this id already exists. Operation was terminated!");
+        } else {
+            workSpaceMap.put(space.getId(), space);
+        }
+    }
+
+    public void addReservation(Reservation reservation) {
+        Optional<WorkSpace> space = getWorkSpaceById(reservation.getSpaceId());
+        WorkSpace updatedSpace;
+
+        if (space.isPresent()) {
+            reservationList.add(reservation);
+            updatedSpace = space.get();
+            updatedSpace.setAvailability(false);
+            updateWorkSpace(updatedSpace);
+        }
     }
 
     public List<Reservation> getReservationList() {
         return reservationList;
     }
 
-    public List<WorkSpace> getWorkspaceList() {
-        return workspaceList;
+    public Map<Integer, WorkSpace> getWorkSpaceMap() {
+        return workSpaceMap;
     }
 
     public void setReservationList(List<Reservation> reservationList) {
@@ -31,17 +45,17 @@ public class Memory {
         }
     }
 
-    public void clear() {
-        reservationList.clear();
-        workspaceList.clear();
+    public void setWorkSpaceMap(Map<Integer, WorkSpace> workSpaceMap) {
+        this.workSpaceMap = workSpaceMap;
     }
 
-    public void setWorkspaceList(List<WorkSpace> workspaceList) {
-        this.workspaceList = workspaceList;
+    public void clear() {
+        reservationList.clear();
+        workSpaceMap.clear();
     }
 
     private Optional<WorkSpace> getWorkSpaceById(int spaceId) {
-        return workspaceList.stream().filter(i -> i.getId() == spaceId).findFirst();
+        return Optional.ofNullable(workSpaceMap.get(spaceId));
     }
 
     private Optional<Reservation> getReservationById(int reservationId) {
@@ -51,7 +65,7 @@ public class Memory {
     public void deleteWorkSpace(int spaceId) {
         Optional<WorkSpace> space = getWorkSpaceById(spaceId);
 
-        space.ifPresent(workSpace -> workspaceList.remove(workSpace));
+        space.ifPresent(workSpace -> workSpaceMap.remove(workSpace.getId()));
         reservationList.removeIf(reservation -> reservation.getSpaceId() == spaceId);
     }
 
@@ -75,8 +89,8 @@ public class Memory {
     public String getAllWorkSpaces() {
         StringBuilder workSpaceView = new StringBuilder();
 
-        for (WorkSpace space : workspaceList) {
-            workSpaceView.append(space.toString()).append("\n");
+        for (var space : workSpaceMap.entrySet()) {
+            workSpaceView.append(space.getValue().toString()).append("\n");
         }
 
         if (workSpaceView.isEmpty()) {
@@ -88,10 +102,11 @@ public class Memory {
 
     public String getAvailableWorkSpaces() {
         StringBuilder workSpaceView = new StringBuilder();
-        List<WorkSpace> availableSpaces = workspaceList.stream().filter(WorkSpace::getAvailability).toList();
 
-        for (WorkSpace space : availableSpaces) {
-            workSpaceView.append(space.toString()).append("\n");
+        for (var space : workSpaceMap.entrySet()) {
+            if (space.getValue().getAvailability()) {
+                workSpaceView.append(space).append("\n");
+            }
         }
 
         if (workSpaceView.isEmpty()) {
@@ -115,25 +130,12 @@ public class Memory {
         return reservationsView.toString();
     }
 
-    public void addReservation(Reservation reservation) {
-        Optional<WorkSpace> space = getWorkSpaceById(reservation.getSpaceId());
-        WorkSpace updatedSpace;
-
-        if (space.isPresent()) {
-            reservationList.add(reservation);
-            updatedSpace = space.get();
-            updatedSpace.setAvailability(false);
-            updateWorkSpace(updatedSpace);
-        }
-    }
-
     public void updateWorkSpace(WorkSpace updatedSpace) {
-        for (WorkSpace space : workspaceList) {
-            if (space.getId() == updatedSpace.getId()) {
-                space.setType(updatedSpace.getType());
-                space.setPrice(updatedSpace.getPrice());
-                space.setAvailability(updatedSpace.getAvailability());
-            }
+        if (workSpaceMap.containsKey(updatedSpace.getId())) {
+            workSpaceMap.put(updatedSpace.getId(), new WorkSpace(updatedSpace.getId(), updatedSpace.getType(),
+                    updatedSpace.getPrice(), updatedSpace.getAvailability()));
+        } else {
+            System.out.println("Workspace with this id doesn't exist. Operation wasn't completed");
         }
     }
 }
