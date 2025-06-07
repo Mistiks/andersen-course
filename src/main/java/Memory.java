@@ -4,9 +4,9 @@ import main.java.entity.Reservation;
 import main.java.entity.WorkSpace;
 import java.util.*;
 
-public class Memory {
+public class Memory<T extends Reservation> {
 
-    private List<Reservation> reservationList = new ArrayList<>();
+    private List<T> reservationList = new ArrayList<>();
     private Map<Integer, WorkSpace> workSpaceMap = new TreeMap<>();
 
     public void addWorkSpace(WorkSpace space) {
@@ -17,7 +17,7 @@ public class Memory {
         }
     }
 
-    public void addReservation(Reservation reservation) {
+    public void addReservation(T reservation) {
         Optional<WorkSpace> space = getWorkSpaceById(reservation.getSpaceId());
         WorkSpace updatedSpace;
 
@@ -29,7 +29,7 @@ public class Memory {
         }
     }
 
-    public List<Reservation> getReservationList() {
+    public List<T> getReservationList() {
         return reservationList;
     }
 
@@ -37,7 +37,7 @@ public class Memory {
         return workSpaceMap;
     }
 
-    public void setReservationList(List<Reservation> reservationList) {
+    public void setReservationList(List<T> reservationList) {
         this.reservationList = reservationList;
 
         if (!this.reservationList.isEmpty()) {
@@ -58,7 +58,7 @@ public class Memory {
         return Optional.ofNullable(workSpaceMap.get(spaceId));
     }
 
-    private Optional<Reservation> getReservationById(int reservationId) {
+    private Optional<T> getReservationById(int reservationId) {
         return reservationList.stream().filter(i -> i.getId() == reservationId).findFirst();
     }
 
@@ -70,7 +70,7 @@ public class Memory {
     }
 
     public void deleteReservation(int reservationId) {
-        Optional<Reservation> reservation = getReservationById(reservationId);
+        Optional<T> reservation = getReservationById(reservationId);
         Optional<WorkSpace> workSpace;
         WorkSpace space;
 
@@ -105,7 +105,7 @@ public class Memory {
 
         for (var space : workSpaceMap.entrySet()) {
             if (space.getValue().getAvailability()) {
-                workSpaceView.append(space).append("\n");
+                workSpaceView.append(space.getValue()).append("\n");
             }
         }
 
@@ -119,7 +119,7 @@ public class Memory {
     public String getAllReservations() {
         StringBuilder reservationsView = new StringBuilder();
 
-        for (Reservation reservation : reservationList) {
+        for (T reservation : reservationList) {
             reservationsView.append(reservation.toString()).append("\n");
         }
 
