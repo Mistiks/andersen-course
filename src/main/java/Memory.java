@@ -7,7 +7,7 @@ import java.util.*;
 public class Memory<T extends Reservation> {
 
     private List<T> reservationList = new ArrayList<>();
-    private Map<Integer, WorkSpace> workSpaceMap = new TreeMap<>();
+    private Map<Integer, WorkSpace> workSpaceMap = new HashMap<>();
 
     public void addWorkSpace(WorkSpace space) {
         if (workSpaceMap.containsKey(space.getId())) {
@@ -89,9 +89,10 @@ public class Memory<T extends Reservation> {
     public String getAllWorkSpaces() {
         StringBuilder workSpaceView = new StringBuilder();
 
-        for (var space : workSpaceMap.entrySet()) {
-            workSpaceView.append(space.getValue().toString()).append("\n");
-        }
+        workSpaceMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(i -> workSpaceView.append(i.getValue().toString()).append("\n"));
 
         if (workSpaceView.isEmpty()) {
             return "Workspaces not found!\n";
@@ -103,11 +104,11 @@ public class Memory<T extends Reservation> {
     public String getAvailableWorkSpaces() {
         StringBuilder workSpaceView = new StringBuilder();
 
-        for (var space : workSpaceMap.entrySet()) {
-            if (space.getValue().getAvailability()) {
-                workSpaceView.append(space.getValue()).append("\n");
-            }
-        }
+        workSpaceMap.entrySet()
+                .stream()
+                .filter(i -> i.getValue().getAvailability())
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(j -> workSpaceView.append(j.getValue().toString()).append("\n"));
 
         if (workSpaceView.isEmpty()) {
             return "Workspaces not found!\n";
@@ -119,9 +120,7 @@ public class Memory<T extends Reservation> {
     public String getAllReservations() {
         StringBuilder reservationsView = new StringBuilder();
 
-        for (T reservation : reservationList) {
-            reservationsView.append(reservation.toString()).append("\n");
-        }
+        reservationList.forEach(i -> reservationsView.append(i.toString()).append("\n"));
 
         if (reservationsView.isEmpty()) {
             return "Reservations not found!\n";
