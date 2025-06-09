@@ -2,7 +2,6 @@ package main.java;
 
 import main.java.state.StateFileReader;
 import main.java.state.StateFileWriter;
-
 import java.util.Scanner;
 
 public class Main {

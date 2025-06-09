@@ -2,7 +2,6 @@ package main.java;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
 import main.java.entity.Reservation;
 import main.java.entity.WorkSpace;
 

@@ -26,4 +26,5 @@ replay_pid*
 *.iml
 *.txt
 .idea
+out/
 **/target
