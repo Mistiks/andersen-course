@@ -3,6 +3,7 @@ package main.java;
 import main.java.entity.Reservation;
 import main.java.entity.WorkSpace;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Memory<T extends Reservation> {
 
@@ -87,46 +88,44 @@ public class Memory<T extends Reservation> {
     }
 
     public String getAllWorkSpaces() {
-        StringBuilder workSpaceView = new StringBuilder();
-
-        workSpaceMap.entrySet()
+        String workspacesData = workSpaceMap.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByKey())
-                .forEach(i -> workSpaceView.append(i.getValue().toString()).append("\n"));
+                .map(i -> i.getValue().toString())
+                .collect(Collectors.joining("\n", "", "\n"));
 
-        if (workSpaceView.isEmpty()) {
+        if (workspacesData.isEmpty()) {
             return "Workspaces not found!\n";
         }
 
-        return workSpaceView.toString();
+        return workspacesData;
     }
 
     public String getAvailableWorkSpaces() {
-        StringBuilder workSpaceView = new StringBuilder();
-
-        workSpaceMap.entrySet()
+        String workspacesData = workSpaceMap.entrySet()
                 .stream()
                 .filter(i -> i.getValue().getAvailability())
                 .sorted(Map.Entry.comparingByKey())
-                .forEach(j -> workSpaceView.append(j.getValue().toString()).append("\n"));
+                .map(i -> i.getValue().toString())
+                .collect(Collectors.joining("\n", "", "\n"));
 
-        if (workSpaceView.isEmpty()) {
+        if (workspacesData.isEmpty()) {
             return "Workspaces not found!\n";
         }
 
-        return workSpaceView.toString();
+        return workspacesData;
     }
 
     public String getAllReservations() {
-        StringBuilder reservationsView = new StringBuilder();
+        String reservationsData = reservationList.stream()
+                .map(Reservation::toString)
+                .collect(Collectors.joining("\n", "", "\n"));
 
-        reservationList.forEach(i -> reservationsView.append(i.toString()).append("\n"));
-
-        if (reservationsView.isEmpty()) {
+        if (reservationsData.isEmpty()) {
             return "Reservations not found!\n";
         }
 
-        return reservationsView.toString();
+        return reservationsData;
     }
 
     public void updateWorkSpace(WorkSpace updatedSpace) {
