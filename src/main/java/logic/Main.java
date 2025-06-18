@@ -1,7 +1,9 @@
-package main.java;
+package logic;
 
-import main.java.state.StateFileReader;
-import main.java.state.StateFileWriter;
+import entity.Reservation;
+import state.StateFileReader;
+import state.StateFileWriter;
+
 import java.util.Scanner;
 
 public class Main {
@@ -18,7 +20,7 @@ public class Main {
         int option;
         Scanner scanner = new Scanner(System.in);
         MenuSelector selector = new MenuSelector(scanner);
-        Memory memory = new Memory();
+        Memory<Reservation> memory = new Memory<>();
         DataReader reader = new DataReader(scanner);
         StateFileWriter fileWriter = new StateFileWriter(RESERVATION_PATH, WORKSPACE_PATH, memory);
         StateFileReader fileReader = new StateFileReader(RESERVATION_PATH, WORKSPACE_PATH, memory);
@@ -47,7 +49,7 @@ public class Main {
         scanner.close();
     }
 
-    private static void processAdminAction(MenuSelector selector, DataReader reader, Memory memory) {
+    private static void processAdminAction(MenuSelector selector, DataReader reader, Memory<Reservation> memory) {
         int option = selector.chooseAdminMenuOperation();
 
         while (option != ADMIN_MENU_OPTION_AMOUNT) {
@@ -63,7 +65,7 @@ public class Main {
         }
     }
 
-    private static void processUserAction(MenuSelector selector, DataReader reader, Memory memory) {
+    private static void processUserAction(MenuSelector selector, DataReader reader, Memory<Reservation> memory) {
         int option = selector.chooseCustomerMenuOperation();
 
         while (option != CUSTOMER_MENU_OPTION_AMOUNT) {

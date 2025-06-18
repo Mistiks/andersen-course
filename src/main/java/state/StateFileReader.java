@@ -1,4 +1,4 @@
-package main.java.state;
+package state;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
@@ -7,18 +7,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
-import main.java.Memory;
-import main.java.entity.Reservation;
-import main.java.entity.WorkSpace;
+import logic.Memory;
+import entity.Reservation;
+import entity.WorkSpace;
 
 public class StateFileReader {
 
     private boolean isStateRestored = true;
-    private Memory memory;
+    private Memory<Reservation> memory;
     private String reservationPath;
     private String workSpacePath;
 
-    public StateFileReader(String reservationPath, String workSpacePath, Memory memory) {
+    public StateFileReader(String reservationPath, String workSpacePath, Memory<Reservation> memory) {
         this.reservationPath = reservationPath;
         this.workSpacePath = workSpacePath;
         this.memory = memory;
@@ -41,6 +41,7 @@ public class StateFileReader {
             this.isStateRestored = false;
         }  catch (IOException | ClassNotFoundException exception) {
             System.out.println(exception.getMessage());
+            this.isStateRestored = false;
         }
     }
 
@@ -52,6 +53,7 @@ public class StateFileReader {
             this.isStateRestored = false;
         } catch (IOException | ClassNotFoundException exception) {
             System.out.println(exception.getMessage());
+            this.isStateRestored = false;
         }
     }
 }
