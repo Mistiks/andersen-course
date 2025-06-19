@@ -1,7 +1,7 @@
-package main.java;
+package logic;
 
-import main.java.entity.Reservation;
-import main.java.entity.WorkSpace;
+import entity.Reservation;
+import entity.WorkSpace;
 import java.util.*;
 import java.util.stream.Collectors;
 

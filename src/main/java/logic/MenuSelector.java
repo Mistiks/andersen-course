@@ -1,8 +1,8 @@
-package main.java;
+package logic;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import main.java.exception.InvalidOptionException;
+import exception.InvalidOptionException;
 
 public class MenuSelector {
     Scanner scanner;

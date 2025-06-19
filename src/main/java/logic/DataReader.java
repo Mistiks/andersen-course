@@ -1,9 +1,10 @@
-package main.java;
+package logic;
 
+import entity.Reservation;
+import entity.WorkSpace;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import main.java.entity.Reservation;
-import main.java.entity.WorkSpace;
+
 
 public class DataReader {
 

@@ -1,4 +1,4 @@
-package main.java.entity;
+package entity;
 
 import java.io.Serializable;
 
@@ -27,6 +27,26 @@ public class Reservation implements Serializable {
 
     public int getSpaceId() {
         return spaceId;
+    }
+
+    public static int getCounter() {
+        return counter;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTimeStart() {
+        return timeStart;
+    }
+
+    public String getTimeEnd() {
+        return timeEnd;
     }
 
     public static void setCounter(int counter) {
