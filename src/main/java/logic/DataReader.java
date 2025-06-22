@@ -2,6 +2,11 @@ package logic;
 
 import entity.Reservation;
 import entity.WorkSpace;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -14,10 +19,12 @@ public class DataReader {
     private String spacePrice = "Enter workspace price: ";
     private String spaceAvailability = "Enter workspace availability: ";
     private String reservationName = "Enter client name: ";
-    private String reservationDate = "Enter reservation date: ";
-    private String reservationStart = "Enter reservation start time: ";
-    private String reservationEnd = "Enter reservation end time: ";
+    private String reservationDate = "Enter reservation date in a dd-MM-yyyy format: ";
+    private String reservationStart = "Enter reservation start time in a HH:mm format: ";
+    private String reservationEnd = "Enter reservation end time in a HH:mm format: ";
     private String reservationId = "Enter reservation id: ";
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     public DataReader(Scanner scanner) {
         this.scanner = scanner;
@@ -32,13 +39,14 @@ public class DataReader {
     }
 
     public Reservation getNewReservation() {
-        int id = getInt(spaceId, scanner);
+        int id = getInt(reservationId, scanner);
+        int workSpaceId = getInt(spaceId, scanner);
         String name = getString(reservationName, scanner);
-        String date = getString(reservationDate, scanner);
-        String timeStart = getString(reservationStart, scanner);
-        String timeEnd = getString(reservationEnd, scanner);
+        LocalDate date = getDate(reservationDate, scanner);
+        LocalTime timeStart = getTime(reservationStart, scanner);
+        LocalTime timeEnd = getTime(reservationEnd, scanner);
 
-        return new Reservation(id, name, date, timeStart, timeEnd);
+        return new Reservation(id, workSpaceId, name, date, timeStart, timeEnd);
     }
 
     public WorkSpace getUpdatedSpace() {
@@ -50,7 +58,7 @@ public class DataReader {
         return new WorkSpace(id, type, price, isAvailable);
     }
 
-    public int getSpaceIdForDeletion() {
+    public int getWorkSpaceIdForDeletion() {
         return getInt(spaceId, scanner);
     }
 
@@ -59,21 +67,16 @@ public class DataReader {
     }
 
     private int getInt(String message, Scanner scanner) {
-        int input = 0;
-        boolean correctInput = false;
-
+        int input;
         System.out.print(message);
 
-        while (!correctInput) {
-            try {
-                correctInput = true;
-                input = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException exception) {
-                correctInput = false;
-                System.out.print(message);
-            }
+        while (!scanner.hasNextInt()) {
+            scanner.next();
+            System.out.print(message);
         }
+
+        input = scanner.nextInt();
+        scanner.nextLine();
 
         return input;
     }
@@ -85,7 +88,22 @@ public class DataReader {
     }
 
     private boolean getBoolean(String message, Scanner scanner) {
-        boolean input = false;
+        boolean input;
+        System.out.print(message);
+
+        while (!scanner.hasNextBoolean()) {
+            scanner.next();
+            System.out.print(message);
+        }
+
+        input = scanner.nextBoolean();
+        scanner.nextLine();
+
+        return input;
+    }
+
+    private LocalDate getDate(String message, Scanner scanner) {
+        LocalDate input = LocalDate.now();
         boolean correctInput = false;
 
         System.out.print(message);
@@ -93,8 +111,27 @@ public class DataReader {
         while (!correctInput) {
             try {
                 correctInput = true;
-                input = scanner.nextBoolean();
-            } catch (InputMismatchException exception) {
+                input = LocalDate.parse(scanner.nextLine(), dateFormatter);
+            } catch (DateTimeParseException exception) {
+                correctInput = false;
+                System.out.print(message);
+            }
+        }
+
+        return input;
+    }
+
+    private LocalTime getTime(String message, Scanner scanner) {
+        LocalTime input = LocalTime.now();
+        boolean correctInput = false;
+
+        System.out.print(message);
+
+        while (!correctInput) {
+            try {
+                correctInput = true;
+                input = LocalTime.parse(scanner.nextLine(), timeFormatter);
+            } catch (DateTimeParseException exception) {
                 correctInput = false;
                 System.out.print(message);
             }
