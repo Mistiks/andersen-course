@@ -1,8 +1,11 @@
 package logic;
 
-import entity.Reservation;
-import state.StateFileReader;
-import state.StateFileWriter;
+import connection.JDBCConnector;
+import connection.api.IDatabaseConnector;
+import service.ReservationServiceJDBC;
+import service.WorkSpaceServiceJDBC;
+import service.api.IReservationService;
+import service.api.IWorkSpaceService;
 
 import java.util.Scanner;
 
@@ -12,68 +15,92 @@ public class Main {
     private static final int MAIN_MENU_OPTION_AMOUNT = 3;
     private static final int ADMIN_MENU_OPTION_AMOUNT = 6;
     private static final int CUSTOMER_MENU_OPTION_AMOUNT = 5;
-    private static final String WORKSPACE_PATH = "src/main/resources/workspace.ser";
-    private static final String RESERVATION_PATH = "src/main/resources/reservation.ser";
-    private static final String STATE_LOAD_MESSAGE = "Program state wasn't retrieved. Start with empty memory!";
 
     public static void main(String[] args) {
         int option;
         Scanner scanner = new Scanner(System.in);
         MenuSelector selector = new MenuSelector(scanner);
-        Memory<Reservation> memory = new Memory<>();
         DataReader reader = new DataReader(scanner);
-        StateFileWriter fileWriter = new StateFileWriter(RESERVATION_PATH, WORKSPACE_PATH, memory);
-        StateFileReader fileReader = new StateFileReader(RESERVATION_PATH, WORKSPACE_PATH, memory);
+        IDatabaseConnector connector = new JDBCConnector("jdbc:postgresql://127.0.0.1:5432/edu",
+                "postgres", "password");
+        IWorkSpaceService workSpaceService = new WorkSpaceServiceJDBC(connector.getConnection());
+        IReservationService reservationService = new ReservationServiceJDBC(connector.getConnection());
+        ActionHandler actionHandler = new ActionHandler(workSpaceService, reservationService);
 
-        fileReader.readState();
         System.out.println(WELCOME_MESSAGE);
-
-        if (!fileReader.isStateRestored()) {
-            memory.clear();
-            System.out.println(STATE_LOAD_MESSAGE);
-        }
 
         option = selector.chooseMainMenuOperation();
 
         while (option != MAIN_MENU_OPTION_AMOUNT) {
             if (option == 1) {
-                processAdminAction(selector, reader, memory);
+                processAdminAction(selector, reader, actionHandler);
             } else if (option == 2) {
-                processUserAction(selector, reader, memory);
+                processUserAction(selector, reader, actionHandler);
             }
 
             option = selector.chooseMainMenuOperation();
         }
 
-        fileWriter.writeState();
         scanner.close();
     }
 
-    private static void processAdminAction(MenuSelector selector, DataReader reader, Memory<Reservation> memory) {
+    private static void processAdminAction(MenuSelector selector, DataReader reader, ActionHandler actionHandler) {
         int option = selector.chooseAdminMenuOperation();
 
         while (option != ADMIN_MENU_OPTION_AMOUNT) {
             switch (option) {
-                case 1 -> memory.addWorkSpace(reader.getNewSpace());
-                case 2 -> memory.deleteWorkSpace(reader.getSpaceIdForDeletion());
-                case 3 -> System.out.print(memory.getAllWorkSpaces());
-                case 4 -> memory.updateWorkSpace(reader.getUpdatedSpace());
-                case 5 -> System.out.print(memory.getAllReservations());
+                case 1 -> {
+                    if (actionHandler.addNewWorkspace(reader.getNewSpace()) == 0) {
+                        System.out.println("Workspace wasn't added!");
+                    } else {
+                        System.out.println("Workspace was added!");
+                    }
+                }
+                case 2 -> {
+                    if (actionHandler.deleteWorkSpace(reader.getWorkSpaceIdForDeletion()) == 0) {
+                        System.out.println("Workspace wasn't deleted!");
+                    } else {
+                        System.out.println("Workspace was deleted!");
+                    }
+                }
+                case 3 -> System.out.print(actionHandler.getAllWorkSpaces());
+                case 4 -> {
+                    if (actionHandler.updateWorkSpace(reader.getUpdatedSpace()) == 0) {
+                        System.out.println("Workspace wasn't updated!");
+                    } else {
+                        System.out.println("Workspace was updated!");
+                    }
+                }
+                case 5 -> System.out.print(actionHandler.getAllReservations());
+                default -> System.out.println("Wrong option!");
             }
 
             option = selector.chooseAdminMenuOperation();
         }
     }
 
-    private static void processUserAction(MenuSelector selector, DataReader reader, Memory<Reservation> memory) {
+    private static void processUserAction(MenuSelector selector, DataReader reader, ActionHandler actionHandler) {
         int option = selector.chooseCustomerMenuOperation();
 
         while (option != CUSTOMER_MENU_OPTION_AMOUNT) {
             switch (option) {
-                case 1 -> System.out.print(memory.getAvailableWorkSpaces());
-                case 2 -> memory.addReservation(reader.getNewReservation());
-                case 3 -> System.out.print(memory.getAllReservations());
-                case 4 -> memory.deleteReservation(reader.getReservationIdForDeletion());
+                case 1 -> System.out.print(actionHandler.getAvailableWorkSpaces());
+                case 2 -> {
+                    if (actionHandler.addReservation(reader.getNewReservation()) == 0) {
+                        System.out.println("Reservation wasn't added!");
+                    } else {
+                        System.out.println("Reservation was added!");
+                    }
+                }
+                case 3 -> System.out.print(actionHandler.getAllReservations());
+                case 4 -> {
+                    if (actionHandler.deleteReservation(reader.getReservationIdForDeletion()) == 0) {
+                        System.out.println("Reservation wasn't deleted!");
+                    } else {
+                        System.out.println("Reservation was deleted!");
+                    }
+                }
+                default -> System.out.println("Wrong option!");
             }
 
             option = selector.chooseCustomerMenuOperation();

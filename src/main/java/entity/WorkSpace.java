@@ -1,8 +1,6 @@
 package entity;
 
-import java.io.Serializable;
-
-public class WorkSpace implements Serializable {
+public class WorkSpace {
 
     private final int id;
     private String type;
