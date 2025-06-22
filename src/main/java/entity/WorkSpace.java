@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Objects;
+
 public class WorkSpace {
 
     private final int id;
@@ -45,5 +47,18 @@ public class WorkSpace {
     @Override
     public String toString() {
         return String.format("Space with id %d of type \"%s\" with price %d", id, type, price);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof WorkSpace workSpace)) return false;
+        return getId() == workSpace.getId() && getPrice() == workSpace.getPrice()
+                && getAvailability() == workSpace.getAvailability()
+                && Objects.equals(getType(), workSpace.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getType(), getPrice(), getAvailability());
     }
 }
