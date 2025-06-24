@@ -1,20 +1,42 @@
 package entity;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@Entity
+@Table(name = "reservation")
 public class Reservation {
 
-    private final int id;
+    @Id
+    private int id;
+
+    @Transient
     private int spaceId;
+
+    @ManyToOne
+    @JoinColumn(name = "space_id")
+    private WorkSpace workSpace;
+
+    @Column(name = "client_name")
     private String clientName;
+
+    @Column(name = "reservation_date")
     private LocalDate date;
+
+    @Column(name = "time_start")
     private LocalTime timeStart;
+
+    @Column(name = "time_end")
     private LocalTime timeEnd;
+
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    public Reservation() {}
 
     public Reservation(int id, int spaceId, String clientName, LocalDate date, LocalTime timeStart, LocalTime timeEnd) {
         this.id = id;
@@ -23,6 +45,15 @@ public class Reservation {
         this.date = date;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+    }
+
+    public Reservation(int id, WorkSpace workSpace, String clientName, LocalDate date, LocalTime timeStart, LocalTime timeEnd) {
+        this.id = id;
+        this.clientName = clientName;
+        this.date = date;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.workSpace = workSpace;
     }
 
     public int getId() {
@@ -67,6 +98,14 @@ public class Reservation {
 
     public void setTimeEnd(LocalTime timeEnd) {
         this.timeEnd = timeEnd;
+    }
+
+    public WorkSpace getWorkSpace() {
+        return workSpace;
+    }
+
+    public void setWorkSpace(WorkSpace workSpace) {
+        this.workSpace = workSpace;
     }
 
     @Override
