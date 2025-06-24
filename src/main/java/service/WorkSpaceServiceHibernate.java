@@ -47,22 +47,34 @@ public class WorkSpaceServiceHibernate implements IWorkSpaceService {
     @Override
     public int updateWorkSpace(WorkSpace space) {
         Optional<WorkSpace> workSpace = getWorkSpaceById(space.getId());
+        EntityTransaction transaction;
 
         if (workSpace.isEmpty()) {
             return 0;
         }
 
-        entityManager.merge(workSpace.get());
+        transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.merge(space);
+
+        transaction.commit();
 
         return 1;
     }
 
     @Override
     public int deleteWorkspace(int id) {
-        WorkSpace workSpace = entityManager.find(WorkSpace.class, id);
+        Optional<WorkSpace> workSpace = getWorkSpaceById(id);
 
-        if (workSpace != null) {
-            entityManager.remove(workSpace);
+        if (workSpace.isPresent()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            entityManager.remove(workSpace.get());
+
+            entityManager.flush();
+            transaction.commit();
             return 1;
         }
 
