@@ -33,7 +33,10 @@ public class Reservation {
     @Column(name = "time_end")
     private LocalTime timeEnd;
 
+    @Transient
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    @Transient
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public Reservation() {}

@@ -3,9 +3,7 @@ package logic;
 import connection.JDBCConnector;
 import connection.api.IDatabaseConnector;
 import service.ReservationServiceHibernate;
-import service.ReservationServiceJDBC;
 import service.WorkSpaceServiceHibernate;
-import service.WorkSpaceServiceJDBC;
 import service.api.IReservationService;
 import service.api.IWorkSpaceService;
 
@@ -23,8 +21,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         MenuSelector selector = new MenuSelector(scanner);
         DataReader reader = new DataReader(scanner);
-        IDatabaseConnector connector = new JDBCConnector("jdbc:postgresql://127.0.0.1:5432/edu",
-                "postgres", "password");
         IWorkSpaceService workSpaceService = new WorkSpaceServiceHibernate();
         IReservationService reservationService = new ReservationServiceHibernate();
         ActionHandler actionHandler = new ActionHandler(workSpaceService, reservationService);
