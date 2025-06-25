@@ -8,6 +8,7 @@ import java.util.Objects;
 public class WorkSpace {
 
     @Id
+    @Column(name = "id")
     private Integer id;
 
     @Column(name = "type")

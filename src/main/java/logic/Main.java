@@ -22,7 +22,7 @@ public class Main {
         MenuSelector selector = new MenuSelector(scanner);
         DataReader reader = new DataReader(scanner);
         IWorkSpaceService workSpaceService = new WorkSpaceServiceHibernate();
-        IReservationService reservationService = new ReservationServiceHibernate();
+        IReservationService reservationService = new ReservationServiceHibernate(workSpaceService);
         ActionHandler actionHandler = new ActionHandler(workSpaceService, reservationService);
 
         System.out.println(WELCOME_MESSAGE);

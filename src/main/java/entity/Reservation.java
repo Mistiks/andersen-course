@@ -12,6 +12,7 @@ import java.util.Objects;
 public class Reservation {
 
     @Id
+    @Column(name = "id")
     private int id;
 
     @Transient
@@ -114,7 +115,7 @@ public class Reservation {
     @Override
     public String toString() {
         return String.format("Reservation №%d of workspace with id %d by %s on %s. Start: %s. End: %s",
-                id, spaceId, clientName,
+                id, spaceId != 0 ? spaceId : workSpace.getId(), clientName,
                 dateFormatter.format(date), timeFormatter.format(timeStart), timeFormatter.format(timeEnd));
     }
 
