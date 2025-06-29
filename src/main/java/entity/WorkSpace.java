@@ -1,13 +1,26 @@
 package entity;
 
+import jakarta.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "workspace")
 public class WorkSpace {
 
-    private final int id;
+    @Id
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "type")
     private String type;
-    private int price;
-    private boolean availability;
+
+    @Column(name = "price")
+    private Integer price;
+
+    @Column(name = "availability")
+    private Boolean availability;
+
+    public WorkSpace() {}
 
     public WorkSpace(int id, String type, int price, boolean isAvailable) {
         this.id = id;
@@ -18,6 +31,10 @@ public class WorkSpace {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getType() {

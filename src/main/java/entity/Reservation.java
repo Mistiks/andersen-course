@@ -1,20 +1,46 @@
 package entity;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+@Entity
+@Table(name = "reservation")
 public class Reservation {
 
-    private final int id;
+    @Id
+    @Column(name = "id")
+    private int id;
+
+    @Transient
     private int spaceId;
+
+    @ManyToOne
+    @JoinColumn(name = "space_id")
+    private WorkSpace workSpace;
+
+    @Column(name = "client_name")
     private String clientName;
+
+    @Column(name = "reservation_date")
     private LocalDate date;
+
+    @Column(name = "time_start")
     private LocalTime timeStart;
+
+    @Column(name = "time_end")
     private LocalTime timeEnd;
+
+    @Transient
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    @Transient
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    public Reservation() {}
 
     public Reservation(int id, int spaceId, String clientName, LocalDate date, LocalTime timeStart, LocalTime timeEnd) {
         this.id = id;
@@ -23,6 +49,15 @@ public class Reservation {
         this.date = date;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+    }
+
+    public Reservation(int id, WorkSpace workSpace, String clientName, LocalDate date, LocalTime timeStart, LocalTime timeEnd) {
+        this.id = id;
+        this.clientName = clientName;
+        this.date = date;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.workSpace = workSpace;
     }
 
     public int getId() {
@@ -69,10 +104,18 @@ public class Reservation {
         this.timeEnd = timeEnd;
     }
 
+    public WorkSpace getWorkSpace() {
+        return workSpace;
+    }
+
+    public void setWorkSpace(WorkSpace workSpace) {
+        this.workSpace = workSpace;
+    }
+
     @Override
     public String toString() {
         return String.format("Reservation №%d of workspace with id %d by %s on %s. Start: %s. End: %s",
-                id, spaceId, clientName,
+                id, spaceId != 0 ? spaceId : workSpace.getId(), clientName,
                 dateFormatter.format(date), timeFormatter.format(timeStart), timeFormatter.format(timeEnd));
     }
 
